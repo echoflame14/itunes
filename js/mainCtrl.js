@@ -24,6 +24,7 @@ angular.module('itunes').controller('mainCtrl', function($scope, itunesService){
 		itunesService.getArtist($scope.artist)
 			.then(function(response){
 				var r = response.data.results;
+				console.log(r);
 				for(var i = 0; i < r.length; i++){
 					sortedArtistsArr.push({
 						AlbumArt: r[i].artworkUrl30,
@@ -34,7 +35,9 @@ angular.module('itunes').controller('mainCtrl', function($scope, itunesService){
 						Play:r[i].previewUrl
 					});
 				}
+				console.log(sortedArtistsArr);
 				return sortedArtistsArr;
+
 			});
 		 };
 
