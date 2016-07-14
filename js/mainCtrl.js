@@ -11,7 +11,7 @@ angular.module('itunes').controller('mainCtrl', function($scope, itunesService){
         {field: 'Artist', displayName: 'Artist'},
         {field: 'Collection', displayName: 'Collection'},
         {field: 'AlbumArt', displayName: 'Album Art', width: '110px', cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><img src="{{row.getProperty(col.field)}}"></div>'},
-        {field: 'Type', displayName: 'Type'},
+        {field: 'Type', displayName: 'SongTitle'},
         {field: 'CollectionPrice', displayName: 'Collection Price'},
       ]
   };
@@ -22,30 +22,23 @@ angular.module('itunes').controller('mainCtrl', function($scope, itunesService){
 	 var sortedArtistsArr = [];
 	 $scope.getSongData = function(){
 		itunesService.getArtist($scope.artist)
+			.then(function(response){
+				var r = response.data.results;
+				for(var i = 0; i < r.length; i++){
+					sortedArtistsArr.push({
+						AlbumArt: r[i].artworkUrl30,
+						Artist: r[i].artistName,
+						Collection: r[i].collectionName,
+						CollectionPrice: r[i].collectionPrice,
+						Type:r[i].trackName,
+						Play:r[i].previewUrl
+					});
+				}
+				return sortedArtistsArr;
+			});
+		 };
 
-		.then(function(response){
-			console.log(response.data.results);
-			var r = response.data.results;
-			for(var i = 0; i < r.length; i++){
-				sortedArtistsArr.push({
-					artwork: r[i].artworkUrl100,
-					artist: r[i].artistName,
-					collection: r[i].collectionName,
-					CollectionPrice: r[i].collectionPrice,
-					type:r[i].kind
-				});
-			}
-			return sortedArtistsArr;
-		});
-	 };
-	//  artwork: response.data.results[counter].artworkUrl100,
- // 	artist: r[counter].artistName,
- // 	collection: r[counter].collectionName,
- // 	CollectionPrice: r[counter].collectionPrice,
- // 	type:r[counter].kind
-
-
-
+	 $scope.songData = sortedArtistsArr;
   //Now write a function that will call the method on the itunesService that is responsible for getting the data from iTunes, whenever the user clicks the submit button
   //*remember, that method should be expecting an artist name. The artist name is coming from the input box on index.html, head over there and check if that input box is tied to any specific model we could use.
   //Also note that that method should be retuning a promise, so you could use .then in this function.
